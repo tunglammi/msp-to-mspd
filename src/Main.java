@@ -3,6 +3,9 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Created by nhom BTD on 14/04/2020
+ */
 public class Main {
     private static int readIntSpd(RandomAccessFile raf) throws IOException {
         int ch1 = raf.read();
@@ -24,24 +27,25 @@ public class Main {
     public static void main(String[] args){
         try {
             String file = "Thuatngunganhdien";
-            int tongSoTu, viTriDanhSach, duLieuThua, doDaiString, chieuDaiTu, chieuDaiNghia;
+            int tongSoTu, viTriDanhSach, duLieuThua, doDaiHeader, chieuDaiTu, chieuDaiNghia;
             byte[] bs;
-            String[] dln;
+            String[] header;
             String tu = "",nghia = "";
             ThongTinTu ttTu;
-            LangComparator langcomparator = new LangComparator("en");;
+            LangComparator langcomparator = new LangComparator("en");
+            Converter converter= new Converter();
 
             RandomAccessFile rafInput = new RandomAccessFile(file + ".spd", "r");
             viTriDanhSach = readIntSpd(rafInput);
             tongSoTu = (int) (rafInput.length() - (long)viTriDanhSach) / 4;
             ThongTinTu[] danhSachTu = new ThongTinTu[tongSoTu];
             duLieuThua = readShortSpd(rafInput);
-            doDaiString = readShortSpd(rafInput);
-            System.out.println(doDaiString);
-            bs = new byte[doDaiString];
+            doDaiHeader = readShortSpd(rafInput);
+            System.out.println(doDaiHeader);
+            bs = new byte[doDaiHeader];
             rafInput.read(bs);
-            //dln ma ngon ngu, sdk 4, Giong doc, Ten tu dien, tac gia, font chinh, kich thuoc chinh, font phu, kich thuoc phu
-            dln = (new String(bs, "UTF-8")).split("\u0000");
+            //header ma ngon ngu, sdk 4, Giong doc, Ten tu dien, tac gia, font chinh, kich thuoc chinh, font phu, kich thuoc phu
+            header = (new String(bs, "UTF-8")).split("\u0000");
 
             RandomAccessFile rafOutputIndex = new RandomAccessFile(file + ".mspd_index", "rw");
             RandomAccessFile rafOutputData = new RandomAccessFile(file + ".mspd_data", "rw");
@@ -71,7 +75,8 @@ public class Main {
                 rafOutputIndex.writeLong(rafOutputData.getFilePointer());
                 bs = new byte[chieuDaiNghia];
                 rafInput.read(bs);
-                nghia = new String(bs, 0, chieuDaiNghia, "UTF-8");
+                nghia = converter.convert(new String(bs, 0, chieuDaiNghia, "UTF-8"));
+                chieuDaiNghia = nghia.length();
                 bs = nghia.getBytes("UTF-8");
                 rafOutputIndex.writeInt(chieuDaiNghia);
                 rafOutputData.write(bs, 0, chieuDaiNghia);
@@ -84,7 +89,7 @@ public class Main {
             rafOutputIndex.writeLong(rafOutputIndex.length());
             rafOutputIndex.seek(rafOutputIndex.length());
 
-            bs = "Tung Lam test".getBytes("UTF-8");
+            bs = header[4].getBytes("UTF-8");
             rafOutputIndex.writeInt(bs.length);
             rafOutputIndex.write(bs);
 

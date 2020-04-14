@@ -2,6 +2,9 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 
+/**
+ * Created by nhom on BTD 14/04/2020
+ */
 public class LangComparator implements Comparator{
     Collator collator;
 
