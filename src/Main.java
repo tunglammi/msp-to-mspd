@@ -1,7 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,22 +21,12 @@ public class Main {
             throw new EOFException();
         return ((ch1 << 0) + (ch2 << 8));
     }
-//    public static final int byteArrayToInt(byte[] b) {
-//        return (b[0] << 24) + ((b[1] & 255) << 16) + ((b[2] & 255) << 8) + (b[3] & 255);
-//    }
-    public static final int byteArrayToInt(byte[] b, int start) {
-        return (b[0 + start] << 24) + ((b[1 + start] & 255) << 16) + ((b[2 + start] & 255) << 8) + (b[3 + start] & 255);
-//        return (b[3 + start] << 24) + ((b[2 + start] & 255) << 16) + ((b[1 + start] & 255) << 8) + (b[0 + start] & 255);
-    }
     public static void main(String[] args){
         try {
             String file = "Thuatngunganhdien";
             int tongSoTu, viTriDanhSach, duLieuThua, doDaiString, chieuDaiTu, chieuDaiNghia;
-            String sold = "", dau = "";
             byte[] bs;
             String[] dln;
-            boolean vn;
-            long seek;
             String tu = "",nghia = "";
             ThongTinTu ttTu;
             LangComparator langcomparator = new LangComparator("en");;
@@ -55,15 +43,15 @@ public class Main {
             //dln ma ngon ngu, sdk 4, Giong doc, Ten tu dien, tac gia, font chinh, kich thuoc chinh, font phu, kich thuoc phu
             dln = (new String(bs, "UTF-8")).split("\u0000");
 
-            RandomAccessFile var10 = new RandomAccessFile(file + ".mspd_index", "rw");
-            RandomAccessFile var11 = new RandomAccessFile(file + ".mspd_data", "rw");
+            RandomAccessFile rafOutputIndex = new RandomAccessFile(file + ".mspd_index", "rw");
+            RandomAccessFile rafOutputData = new RandomAccessFile(file + ".mspd_data", "rw");
 
-            var10.setLength(0L);
-            var11.setLength(0L);
-            var10.write("mSPD001".getBytes("UTF-8"));
-            var11.write("mSPD001".getBytes("UTF-8"));
-            var10.writeLong(0L);
-            var10.writeLong(0L);
+            rafOutputIndex.setLength(0L);
+            rafOutputData.setLength(0L);
+            rafOutputIndex.write("mSPD001".getBytes("UTF-8"));
+            rafOutputData.write("mSPD001".getBytes("UTF-8"));
+            rafOutputIndex.writeLong(0L);
+            rafOutputIndex.writeLong(0L);
 
             for (int i = 0; i < tongSoTu; i++){
                 chieuDaiTu = readShortSpd(rafInput);
@@ -73,36 +61,36 @@ public class Main {
                 tu = new String(bs, 0, chieuDaiTu, "UTF-8");
                 ttTu = new ThongTinTu();
                 ttTu.tu = tu;
-                ttTu.vitri = var10.getFilePointer();
+                ttTu.vitri = rafOutputIndex.getFilePointer();
                 //ghi tu vao mspd
                 bs = tu.getBytes("UTF-8");
-                var10.writeShort((short)chieuDaiTu);
-                var10.write(bs);
+                rafOutputIndex.writeShort((short)chieuDaiTu);
+                rafOutputIndex.write(bs);
                 
                 chieuDaiNghia = readIntSpd(rafInput);
-                var10.writeLong(var11.getFilePointer());
+                rafOutputIndex.writeLong(rafOutputData.getFilePointer());
                 bs = new byte[chieuDaiNghia];
                 rafInput.read(bs);
                 nghia = new String(bs, 0, chieuDaiNghia, "UTF-8");
                 bs = nghia.getBytes("UTF-8");
-                var10.writeInt(chieuDaiNghia);
-                var11.write(bs, 0, chieuDaiNghia);
+                rafOutputIndex.writeInt(chieuDaiNghia);
+                rafOutputData.write(bs, 0, chieuDaiNghia);
                 
                 danhSachTu[i] = ttTu;
             }
             rafInput.close();
-            var11.close();
-            var10.seek(7L);
-            var10.writeLong(var10.length());
-            var10.seek(var10.length());
+            rafOutputData.close();
+            rafOutputIndex.seek(7L);
+            rafOutputIndex.writeLong(rafOutputIndex.length());
+            rafOutputIndex.seek(rafOutputIndex.length());
 
             bs = "Tung Lam test".getBytes("UTF-8");
-            var10.writeInt(bs.length);
-            var10.write(bs);
+            rafOutputIndex.writeInt(bs.length);
+            rafOutputIndex.write(bs);
 
             Arrays.sort(danhSachTu, langcomparator);
             for(int i = 0; i < tongSoTu; ++i) {
-                var10.writeLong(danhSachTu[i].vitri);
+                rafOutputIndex.writeLong(danhSachTu[i].vitri);
             }
 
 //            System.out.println(tu + " " + nghia);
