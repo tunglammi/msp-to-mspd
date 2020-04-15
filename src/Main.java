@@ -26,13 +26,17 @@ public class Main {
     }
     public static void main(String[] args){
         try {
-            String file = "Thuatngunganhdien";
+            if (args.length == 1) {
+                System.out.println("Chua nhap ten file");
+                return;
+            }
+            String file = args[0];
             int tongSoTu, viTriDanhSach, duLieuThua, doDaiHeader, chieuDaiTu, chieuDaiNghia;
             byte[] bs;
             String[] header;
             String tu = "",nghia = "";
             ThongTinTu ttTu;
-            LangComparator langcomparator = new LangComparator("en");
+            LangComparator langcomparator = new LangComparator();
             Converter converter= new Converter();
 
             RandomAccessFile rafInput = new RandomAccessFile(file + ".spd", "r");
@@ -67,21 +71,17 @@ public class Main {
                 ttTu.vitri = rafOutputIndex.getFilePointer();
                 bs = tu.getBytes("UTF-8");
                 rafOutputIndex.writeShort(bs.length);
-                rafOutputIndex.write(bs, 0, bs.length);
+                rafOutputIndex.write(bs);
                 
                 chieuDaiNghia = readIntSpd(rafInput);
                 rafOutputIndex.writeLong(rafOutputData.getFilePointer());
                 bs = new byte[chieuDaiNghia];
                 rafInput.read(bs);
-//                nghia = converter.convert(new String(bs, 0, chieuDaiNghia, "UTF-8"));
-                nghia = new String(bs, 0, chieuDaiNghia, "UTF-8");
+                nghia = converter.convert(new String(bs, 0, chieuDaiNghia, "UTF-8"));
                 bs = nghia.getBytes("UTF-8");
                 chieuDaiNghia = bs.length;
-                if (chieuDaiNghia > 10000){
-                    System.out.println("lon qua");
-                }
                 rafOutputIndex.writeInt(chieuDaiNghia);
-                rafOutputData.write(bs, 0, chieuDaiNghia);
+                rafOutputData.write(bs);
                 
                 danhSachTu[i] = ttTu;
             }
@@ -95,7 +95,7 @@ public class Main {
             rafOutputIndex.writeInt(bs.length);
             rafOutputIndex.write(bs, 0, bs.length);
 
-//            Arrays.sort(danhSachTu, langcomparator);
+            Arrays.sort(danhSachTu, langcomparator);
             for(int i = 0; i < tongSoTu; ++i) {
                 rafOutputIndex.writeLong(danhSachTu[i].vitri);
             }

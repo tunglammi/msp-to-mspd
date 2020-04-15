@@ -52,9 +52,6 @@ public class Converter {
                         case '@':
                             this.stringBuilder.append("</b></font><br>");
                             break;
-//                        case '~':
-//                            this.stringBuilder.append("<br>");
-//                            break;
                         default:
                             this.stringBuilder.append("<br>");
                     }
@@ -113,14 +110,13 @@ public class Converter {
             case '@':
                 this.stringBuilder.append("</b></font><br>");
                 break;
-//            case '~':
-//                this.stringBuilder.append("\"/><br>");
-//                break;
             default:
                 this.stringBuilder.append("<br>");
         }
-
-//        this.stringBuilder.append("</font>");
+        if (isImage) {
+            this.stringBuilder.append("\"/>");
+        }
+        this.stringBuilder.append("</font>");
         return this.stringBuilder.toString();
     }
 }
