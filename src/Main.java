@@ -60,24 +60,26 @@ public class Main {
             for (int i = 0; i < tongSoTu; i++){
                 chieuDaiTu = readShortSpd(rafInput);
                 bs = new byte[chieuDaiTu];
-                //doc tu tu spd
-                rafInput.read(bs);
+                rafInput.read(bs, 0, chieuDaiTu);
                 tu = new String(bs, 0, chieuDaiTu, "UTF-8");
                 ttTu = new ThongTinTu();
                 ttTu.tu = tu;
                 ttTu.vitri = rafOutputIndex.getFilePointer();
-                //ghi tu vao mspd
                 bs = tu.getBytes("UTF-8");
-                rafOutputIndex.writeShort((short)chieuDaiTu);
-                rafOutputIndex.write(bs);
+                rafOutputIndex.writeShort(bs.length);
+                rafOutputIndex.write(bs, 0, bs.length);
                 
                 chieuDaiNghia = readIntSpd(rafInput);
                 rafOutputIndex.writeLong(rafOutputData.getFilePointer());
                 bs = new byte[chieuDaiNghia];
                 rafInput.read(bs);
-                nghia = converter.convert(new String(bs, 0, chieuDaiNghia, "UTF-8"));
-                chieuDaiNghia = nghia.length();
+//                nghia = converter.convert(new String(bs, 0, chieuDaiNghia, "UTF-8"));
+                nghia = new String(bs, 0, chieuDaiNghia, "UTF-8");
                 bs = nghia.getBytes("UTF-8");
+                chieuDaiNghia = bs.length;
+                if (chieuDaiNghia > 10000){
+                    System.out.println("lon qua");
+                }
                 rafOutputIndex.writeInt(chieuDaiNghia);
                 rafOutputData.write(bs, 0, chieuDaiNghia);
                 
@@ -91,17 +93,14 @@ public class Main {
 
             bs = header[4].getBytes("UTF-8");
             rafOutputIndex.writeInt(bs.length);
-            rafOutputIndex.write(bs);
+            rafOutputIndex.write(bs, 0, bs.length);
 
-            Arrays.sort(danhSachTu, langcomparator);
+//            Arrays.sort(danhSachTu, langcomparator);
             for(int i = 0; i < tongSoTu; ++i) {
                 rafOutputIndex.writeLong(danhSachTu[i].vitri);
             }
-
-//            System.out.println(tu + " " + nghia);
+            rafOutputIndex.close();
             System.out.println("Ket thuc");
-
-
         }
         catch (IOException ex){
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, (String)null, ex);

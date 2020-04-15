@@ -38,7 +38,7 @@ public class Converter {
                             this.stringBuilder.append("</b><br>");
                             break;
                         case '*':
-                            this.stringBuilder.append("<br></font></b>");
+                            this.stringBuilder.append("<br></b></font>");
                             break;
                         case '+':
                             this.stringBuilder.append("<br></font>");
@@ -50,11 +50,11 @@ public class Converter {
                             this.stringBuilder.append("<br></font>");
                             break;
                         case '@':
-                            this.stringBuilder.append("</font></b><br>");
+                            this.stringBuilder.append("</b></font><br>");
                             break;
-                        case '~':
-                            this.stringBuilder.append("<br>");
-                            break;
+//                        case '~':
+//                            this.stringBuilder.append("<br>");
+//                            break;
                         default:
                             this.stringBuilder.append("<br>");
                     }
@@ -62,25 +62,25 @@ public class Converter {
 
                 switch(string.charAt(i)) {
                     case '!':
-                        this.stringBuilder.append("<font color = #C00000><b>!");
+                        this.stringBuilder.append("<font color=#C00000><b>!");
                         break;
                     case '#':
                         this.stringBuilder.append("<b>#");
                         break;
                     case '*':
-                        this.stringBuilder.append("<font color =blue><b>*");
+                        this.stringBuilder.append("<font color=blue><b>*");
                         break;
                     case '+':
-                        this.stringBuilder.append("<font color =gray>+");
+                        this.stringBuilder.append("<font color=gray>+");
                         break;
                     case '-':
                         this.stringBuilder.append("-");
                         break;
                     case '=':
-                        this.stringBuilder.append("<font color = green>=");
+                        this.stringBuilder.append("<font color=green>=");
                         break;
                     case '@':
-                        this.stringBuilder.append("<font color = red><b>@");
+                        this.stringBuilder.append("<font color=red><b>@");
                         break;
                     case '~':
                         this.stringBuilder.append("<img style=\"max-width: 100%;height: auto;\" src=\"[mspdict-path]/Images/");
@@ -99,7 +99,7 @@ public class Converter {
                 this.stringBuilder.append("</b><br></font>");
                 break;
             case '*':
-                this.stringBuilder.append("<br></font></b>");
+                this.stringBuilder.append("<br></b></font>");
                 break;
             case '+':
                 this.stringBuilder.append("<br></font>");
@@ -111,13 +111,16 @@ public class Converter {
                 this.stringBuilder.append("<br></font>");
                 break;
             case '@':
-                this.stringBuilder.append("</font></b><br>");
+                this.stringBuilder.append("</b></font><br>");
                 break;
+//            case '~':
+//                this.stringBuilder.append("\"/><br>");
+//                break;
             default:
                 this.stringBuilder.append("<br>");
         }
 
-        this.stringBuilder.append("</font>");
+//        this.stringBuilder.append("</font>");
         return this.stringBuilder.toString();
     }
 }
