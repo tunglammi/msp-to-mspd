@@ -26,7 +26,7 @@ public class Main {
     }
     public static void main(String[] args){
         try {
-            if (args.length == 1) {
+            if (args.length < 1) {
                 System.out.println("Chua nhap ten file");
                 return;
             }
